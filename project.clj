@@ -5,7 +5,9 @@
             :url "https://www.eclipse.org/legal/epl-2.0/"}
   :dependencies [[org.clojure/clojure "1.10.1"]
                  [ring "1.8.1"]
-                 [compojure "1.6.2"]]
+                 [compojure "1.6.2"]
+                 [org.clojure/java.jdbc "0.7.11"]
+                 [org.postgresql/postgresql "42.2.16.jre7"]]
   :repl-options {:init-ns webdev.core}
   
   :min-lein-version "2.0.0"

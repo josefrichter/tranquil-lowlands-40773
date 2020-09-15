@@ -1,9 +1,17 @@
 (ns webdev.core
+  (:require [webdev.item.model :as items]
+            [webdev.item.handler :refer [handle-index-items
+                                         handle-create-item]])
   (:require [ring.adapter.jetty :as jetty]
             [ring.middleware.reload :refer [wrap-reload]]
-            [compojure.core :refer [defroutes GET]]
+            [ring.middleware.params :refer [wrap-params]]
+            [compojure.core :refer [defroutes ANY GET POST PUT DELETE]]
             [compojure.route :refer [not-found]]
             [ring.handler.dump :refer [handle-dump]]))
+
+(def db "jdbc:postgresql://localhost/webdev")
+
+(def myserver "myserver")
 
 (defn greet [req]
     {:status 200
@@ -47,17 +55,37 @@
     )
 )
 
-(defroutes app
+(defroutes routes
   (GET "/" [] greet)
   (GET "/goodbye" [] goodbye)
   (GET "/about" [] about)
   (GET "/yo/:name" [] yo)
   (GET "/calc/:a/:op/:b" [] calc)
-  (GET "/request" [] handle-dump)
+  (ANY "/request" [] handle-dump)
+  
+  (GET "/items" [] handle-index-items)
+  (POST "/items" [] handle-create-item)
+  
   (not-found "Page not found."))
 
+(defn wrap-server [hdlr]
+  (fn [req]
+    (assoc-in (hdlr req) [:headers "Server"] myserver)))
+
+(defn wrap-db [hdlr]
+  (fn [req]
+    (hdlr (assoc req :webdev/db db))))
+
+(def app
+  (wrap-server
+   (wrap-db
+    (wrap-params
+      routes))))
+
 (defn -main [port]
+  (items/create-table db)
   (jetty/run-jetty app {:port (Integer. port)}))
 
 (defn -dev-main [port]
+  (items/create-table db)
   (jetty/run-jetty (wrap-reload #'app) {:port (Integer. port)}))
