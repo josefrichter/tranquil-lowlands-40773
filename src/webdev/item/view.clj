@@ -40,12 +40,22 @@
                [:thead
                 [:tr
                  [:th "Name"]
-                 [:the "Description"]]]
+                 [:th "Description"]
+                 [:th "Actions"]]]
                [:tbody
                 (for [i items]
                   [:tr
                    [:td (h (:name i))]
-                   [:td (h (:description i))]])]]
+                   [:td (h (:description i))]
+                   [:td
+                    [:form.form-horizontal
+                     {:method "POST" :action (str "/items/" (:id i))}
+                     [:input {:type :hidden
+                              :name "_method"
+                              :value "DELETE"}] ;; this is necessary to fake DELETE method
+                     [:input.btn.btn-danger.btn-xs
+                      {:type :submit
+                       :value "Delete item"}]]]])]]
               [:div.col-sm-offset-1 "There are no items"])]
            [:div.col-sm-6
             [:h2 "Create a new item"]
