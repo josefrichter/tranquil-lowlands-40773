@@ -68,12 +68,13 @@
   (GET "/yo/:name" [] yo)
   (GET "/calc/:a/:op/:b" [] calc)
   (ANY "/request" [] handle-dump)
-  
+
+  ;; this is the CRUD meat
   (GET "/items" [] handle-index-items)
   (POST "/items" [] handle-create-item)
   (PUT "/items/:item-id" [] handle-update-item)
   (DELETE "/items/:item-id" [] handle-delete-item)
-  
+
   (not-found "Page not found."))
 
 (defn wrap-server [hdlr]
@@ -87,6 +88,9 @@
 (def sim-methods {"PUT" :put
                   "DELETE" :delete})
 
+;; this is necessary to simulate PUT and DELETE
+;; because they're not suppored by browsers
+;; so we put them as hidden fields to forms
 (defn wrap-simulated-methods [hdlr]
   (fn [req]
     (if-let [method (and (= :post (:request-method req))
@@ -94,6 +98,7 @@
       (hdlr (assoc req :request-method method))
       (hdlr req))))
 
+;; TODO surely doable with some thread macro? -> 
 (def app
   (wrap-server
    (wrap-file-info

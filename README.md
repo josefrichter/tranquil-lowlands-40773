@@ -1,10 +1,18 @@
 # webdev
 
-A Clojure library designed to ... well, that part is up to you.
+Clojure exercise from "Web Development in Clojure" course by PurelyFunctional.tv
 
 ## Usage
 
-FIXME
+deployed to https://tranquil-lowlands-40773.herokuapp.com/
+
+the TODO CRUD is at `/items`
+
+on localhost run this with `lein run 8000` (or other port)
+
+requires running postgres instance and `createdb webdev` beforehand. it then creates all the tables.
+
+
 
 ## License
 
