@@ -5,6 +5,8 @@
   (:require [ring.adapter.jetty :as jetty]
             [ring.middleware.reload :refer [wrap-reload]]
             [ring.middleware.params :refer [wrap-params]]
+            [ring.middleware.resource :refer [wrap-resource]]
+            [ring.middleware.file-info :refer [wrap-file-info]]
             [compojure.core :refer [defroutes ANY GET POST PUT DELETE]]
             [compojure.route :refer [not-found]]
             [ring.handler.dump :refer [handle-dump]]))
@@ -78,9 +80,12 @@
 
 (def app
   (wrap-server
-   (wrap-db
-    (wrap-params
-      routes))))
+   (wrap-file-info
+    (wrap-resource
+      (wrap-db
+        (wrap-params
+          routes))
+        "static"))))
 
 (defn -main [port]
   (items/create-table db)
