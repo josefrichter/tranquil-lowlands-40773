@@ -24,6 +24,30 @@
        {:type :submit
         :value "New item"}]]]]))
 
+(defn delete-item-form [id]
+  (html
+   [:form.form-horizontal
+   {:method "POST" :action (str "/items/" id)}
+   [:input {:type :hidden
+            :name "_method"
+            :value "DELETE"}] ;; this is necessary to fake DELETE method
+   [:input.btn.btn-danger.btn-xs
+    {:type :submit
+     :value "Delete item"}]]))
+
+(defn update-item-form [id checked]
+  (html
+   [:form.form-horizontal
+    {:method "POST" :action (str "/items/" id)}
+    [:input {:type :hidden
+             :name "_method"
+             :value "PUT"}] ;; this is necessary to fake DELETE method
+    [:input {:type :hidden
+             :name "checked"
+             :value (if checked "false" "true")}]
+    [:div.btn-group
+     [:button.btn.btn-primary.btn-xs (if checked "DONE" "TODO")]]]))
+
 (defn items-page [items]
   (html5 {:lang :en}
          [:head
@@ -39,23 +63,17 @@
               [:table.table.table-striped
                [:thead
                 [:tr
+                 [:th]
                  [:th "Name"]
                  [:th "Description"]
                  [:th "Actions"]]]
                [:tbody
                 (for [i items]
                   [:tr
+                   [:td (update-item-form (:id i) (:checked i))]
                    [:td (h (:name i))]
                    [:td (h (:description i))]
-                   [:td
-                    [:form.form-horizontal
-                     {:method "POST" :action (str "/items/" (:id i))}
-                     [:input {:type :hidden
-                              :name "_method"
-                              :value "DELETE"}] ;; this is necessary to fake DELETE method
-                     [:input.btn.btn-danger.btn-xs
-                      {:type :submit
-                       :value "Delete item"}]]]])]]
+                   [:td (delete-item-form (:id i))]])]]
               [:div.col-sm-offset-1 "There are no items"])]
            [:div.col-sm-6
             [:h2 "Create a new item"]
