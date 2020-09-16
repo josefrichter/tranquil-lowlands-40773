@@ -98,16 +98,14 @@
       (hdlr (assoc req :request-method method))
       (hdlr req))))
 
-;; TODO surely doable with some thread macro? -> 
 (def app
-  (wrap-server
-   (wrap-file-info
-    (wrap-resource
-      (wrap-db
-        (wrap-params
-          (wrap-simulated-methods
-           routes)))
-        "static"))))
+  (-> routes
+      wrap-simulated-methods
+      wrap-params
+      wrap-db
+      (wrap-resource "static")
+      wrap-file-info
+      wrap-server))
 
 (defn -main [port]
   (items/create-table db)
