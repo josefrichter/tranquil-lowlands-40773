@@ -45,8 +45,10 @@
     [:input {:type :hidden
              :name "checked"
              :value (if checked "false" "true")}]
-    [:div.btn-group
-     [:button.btn.btn-primary.btn-xs (if checked "DONE" "TODO")]]]))
+    [:input {:type :checkbox
+             :checked checked
+             :onchange "this.form.submit()"}]
+    ]))
 
 (defn items-page [items]
   (html5 {:lang :en}
