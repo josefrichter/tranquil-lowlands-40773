@@ -23,6 +23,14 @@
                 name
                 description]))))
 
+(defn read-item [db id]
+  (db/query
+   db
+   ["SELECT id, name, description, checked, date_created
+     FROM items
+     WHERE id = ?"
+    id]))
+
 ;; db/execute returns number of rows
 (defn update-item [db id checked]
   (= [1] (db/execute!

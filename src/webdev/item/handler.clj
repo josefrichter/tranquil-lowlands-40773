@@ -1,9 +1,11 @@
 (ns webdev.item.handler
-  (:require [webdev.item.model :refer [create-item
-                                       read-items
+  (:require [webdev.item.model :refer [read-items
+                                       create-item
+                                       read-item
                                        update-item
                                        delete-item]]
-            [webdev.item.view :refer [items-page]]))
+            [webdev.item.index :refer [items-page]]
+            [webdev.item.show :refer [item-page]]))
 
 (defn handle-index-items [req]
   (let [db (:webdev/db req)
@@ -20,6 +22,14 @@
     {:status 302
      :headers {"Location" "/items"}
      :body ""}))
+
+(defn handle-read-item [req]
+  (let [db (:webdev/db req)
+        item-id (java.util.UUID/fromString (:item-id (:route-params req)))
+        item (read-item db item-id)]
+    {:status 200
+     :headers {}
+     :body (item-page item)}))
 
 (defn handle-update-item [req]
   (let [db (:webdev/db req)

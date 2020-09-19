@@ -1,4 +1,4 @@
-(ns webdev.item.view
+(ns webdev.item.index
   (:require [hiccup.page :refer [html5]]
             [hiccup.core :refer [html h]]))
 
@@ -73,7 +73,9 @@
                 (for [i items]
                   [:tr
                    [:td (update-item-form (:id i) (:checked i))]
-                   [:td (h (:name i))]
+                   [:td 
+                    [:a {:href (str "/items/" (:id i))}
+                     (h (:name i))]]
                    [:td (h (:description i))]
                    [:td (delete-item-form (:id i))]])]]
               [:div.col-sm-offset-1 "There are no items"])]
